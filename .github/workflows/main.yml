@@ -8,27 +8,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - run: |
-          pip install --upgrade pip
-          pip install buildozer cython
-      - run: |
-          cat > buildozer.spec << 'EOF'
-          [app]
-          title = Olimp Investing
-          package.name = olimpinvesting
-          package.domain = org.olimp
-          source.dir = .
-          source.include_exts = py,json
-          version = 1.0
-          requirements = python3,kivy,kivymd
-          orientation = portrait
-          fullscreen = 0
-          [buildozer]
-          android.ndk = 23b
-          android.sdk = 30
-          android.api = 30
-          android.minapi = 21
-          EOF
+      - run: pip install buildozer cython
+      - run: buildozer init
       - run: yes | buildozer android debug
       - uses: actions/upload-artifact@v4
         with:
