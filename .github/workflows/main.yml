@@ -13,7 +13,7 @@ jobs:
             bash -c "
               pip install buildozer cython &&
               buildozer init &&
-              yes | buildozer android debug
+              echo 'y' | buildozer android debug
             "
       - uses: actions/upload-artifact@v4
         with:
