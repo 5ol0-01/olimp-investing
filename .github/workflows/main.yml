@@ -1,34 +1,20 @@
-name: Build APK
+name: Build APK with Docker
 on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      - run: pip install buildozer cython
       - run: |
-          cat > buildozer.spec << 'EOF'
-          [app]
-          title = Olimp Investing
-          package.name = olimpinvesting
-          package.domain = org.olimp
-          source.dir = .
-          source.include_exts = py,json
-          version = 1.0
-          requirements = python3,kivy,kivymd
-          orientation = portrait
-          fullscreen = 0
-          [buildozer]
-          log_level = 2
-          android.ndk_path = /usr/local/lib/android/sdk/ndk/27.3.13750724
-          android.sdk_path = /usr/local/lib/android/sdk
-          android.api = 31
-          android.minapi = 21
-          EOF
-      - run: yes | buildozer android debug
+          docker run \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            python:3.10-slim \
+            bash -c "
+              pip install buildozer cython &&
+              buildozer init &&
+              yes | buildozer android debug
+            "
       - uses: actions/upload-artifact@v4
         with:
           name: APK
